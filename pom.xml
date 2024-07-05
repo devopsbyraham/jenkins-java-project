@@ -4,27 +4,23 @@
     <groupId>in.RAHAM</groupId>
     <artifactId>JAVA_APP</artifactId>
     <packaging>war</packaging>
-    <version>1.2</version>
-    <name>Java Home myweb</name>
+<version>1.2.6</version>    <name>Java Home myweb</name>
     <url>http://maven.apache.org</url>
     
     <properties>
         <docker.image.prefix>kammana</docker.image.prefix>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-    
+    </properties>    
     <dependencies>
         <dependency>
             <groupId>com.oracle.bedrock</groupId>
             <artifactId>bedrock-runtime-maven</artifactId>
-            <version>1.2.47</version>
+            <version>5.1.2</version>
         </dependency>
         
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>1.2.47</version>
+            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -42,9 +38,10 @@
     </distributionManagement>
     
     <pluginRepositories>
-        <pluginRepository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
+        <pluginRepository>    
+            <id>maven1</id>
+            <name>Maven.org</name>
+            <url>http://repo1.maven.org/maven2</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -53,10 +50,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>1.2.47</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
