@@ -115,7 +115,16 @@ pipeline {
                     cd jenkins-java-project
                     git fetch --all
                     git checkout ${BRANCH_NAME}
-                    perl -pi -e 's|^(\\s*<version>.*</version>\\s*)$|<version>1.2.'${BUILD_NUMBER}'</version>| if $. == 7' pom.xml
+                    # Debug before modification
+                    echo "Before modification:"
+                    sed -n '7p' pom.xml  # Print line 7 before modification
+
+                    # Update line 7 with the new version
+                    perl -i -pe 'if ($. == 7) { s|<version>.*?</version>|<version>1.2.'${BUILD_NUMBER}'</version>| }' pom.xml
+
+                    # Debug after modification
+                    echo "After modification:"
+                    sed -n '7p' pom.xml  # Print line 7 after modification
                     git config user.name "SaravanaNani"
                     git config user.email "saravana08052002@gmail.com"
                     git add pom.xml
