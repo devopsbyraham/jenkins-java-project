@@ -4,7 +4,8 @@
     <groupId>in.RAHAM</groupId>
     <artifactId>JAVA_APP</artifactId>
     <packaging>war</packaging>
-<version>1.2.6</version>    <name>Java Home myweb</name>
+    <version>1.2.6</version> 
+    <name>Java Home myweb</name>
     <url>http://maven.apache.org</url>
     
     <properties>
