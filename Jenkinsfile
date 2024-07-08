@@ -31,7 +31,7 @@ pipeline {
                 '''                
             }
         }
-        stage('Rename and Upload WAR') {
+        stage('Upload Artifact') {
             steps {
                 script {
                     // Rename the WAR file
@@ -52,7 +52,7 @@ pipeline {
             }
         }
 
-        stage('Confirm and Get Private IP') {
+        stage('Confirmation') {
             steps {
                 script {
                     input message: 'Are you sure you want to proceed with the deployment?', ok: 'Yes'
@@ -76,7 +76,7 @@ pipeline {
             }
         }
 
-        stage('Deploy and Restart Tomcat') {
+        stage('Deployment') {
             steps {
                 script {
                     sh '''
