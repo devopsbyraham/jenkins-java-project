@@ -88,17 +88,17 @@ pipeline {
                     ls -al /var/lib/jenkins/workspace/adq-java-app/target/
                     
                     # Shutdown Tomcat
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-9.0.89/bin/shutdown.sh'
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-10.1.25/bin/shutdown.sh'
 
                     # Remove old WAR files and directories
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find /root/apache-tomcat-9.0.89/webapps/ -type d -name 'JAVA_APP-1.2.*' -exec rm -rf {} +"
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find /root/apache-tomcat-9.0.89/webapps/ -type f -name 'JAVA_APP-1.2*.war' -exec rm -f {} +"
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find /root/apache-tomcat-10.1.25/webapps/ -type d -name 'JAVA_APP-1.2.*' -exec rm -rf {} +"
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find /root/apache-tomcat-10.1.25/webapps/ -type f -name 'JAVA_APP-1.2*.war' -exec rm -f {} +"
 
                     # Deploy the new WAR file
-                    scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa /var/lib/jenkins/workspace/adq-java-app/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:/root/apache-tomcat-9.0.89/webapps/
+                    scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa /var/lib/jenkins/workspace/adq-java-app/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:/root/apache-tomcat-10.1.25/webapps/
 
                     # Start Tomcat
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-9.0.89/bin/startup.sh'
+                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-10.1.25/bin/startup.sh'
                     '''
                 }
             }
