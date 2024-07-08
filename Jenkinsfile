@@ -5,6 +5,13 @@ pipeline {
     tools {
         maven 'maven' // Use the name configured in Jenkins
     }
+    environment {
+        WORKSPACE_DIR = '/var/lib/jenkins/workspace/adq-java-app'
+        GCS_BUCKET = 'gs://adq-java-app'
+        PROJECT_ID = 'gcp-adq-pocproject-dev'
+        ZONE = 'us-central1-c'
+        INSTANCE_NAME = 'get-ubuntudesktop'
+    }
 
     stages {
         stage('Checkout') {
@@ -20,33 +27,33 @@ pipeline {
             }
         }
 
-        
         stage('Package') {
             steps {
                 sh '''
-                cd /var/lib/jenkins/workspace/adq-java-app/
+                cd ${WORKSPACE_DIR}
                 mvn compile
                 mvn test
                 mvn package
                 '''                
             }
         }
+
         stage('Upload Artifact') {
             steps {
                 script {
                     // Rename the WAR file
                     sh '''
-                    cd /var/lib/jenkins/workspace/adq-java-app/target/
+                    cd ${WORKSPACE_DIR}/target/
                     mv JAVA_APP-1.2.*.war JAVA_APP-1.2.${BUILD_NUMBER}.war
                     '''
 
                     // Set the path of the artifact and upload path
-                    def artifactPath = "/var/lib/jenkins/workspace/adq-java-app/target/JAVA_APP-1.2.${BUILD_NUMBER}.war"
+                    def artifactPath = "${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war"
                     def uploadPath = "${BRANCH_NAME}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war"
 
                     // Upload to Google Cloud Storage using gsutil
                     sh """
-                    /google-cloud-sdk/bin/gsutil  cp ${artifactPath} gs://adq-java-app/${uploadPath}
+                    /google-cloud-sdk/bin/gsutil cp ${artifactPath} ${GCS_BUCKET}/${uploadPath}
                     """
                 }
             }
@@ -57,11 +64,7 @@ pipeline {
                 script {
                     input message: 'Are you sure you want to proceed with the deployment?', ok: 'Yes'
                     
-                    def instanceName = "get-ubuntudesktop"
-                    def projectId = "gcp-adq-pocproject-dev"
-                    def zone = "us-central1-c"
-
-                    def instanceStatus = sh(script: "gcloud compute instances describe ${instanceName} --project=${projectId} --zone=${zone} --format='get(status)'", returnStdout: true).trim()
+                    def instanceStatus = sh(script: "gcloud compute instances describe ${INSTANCE_NAME} --project=${PROJECT_ID} --zone=${ZONE} --format='get(status)'", returnStdout: true).trim()
                     
                     if (instanceStatus != 'RUNNING') {
                         error "VM instance is not running. Deployment stopped."
@@ -81,11 +84,11 @@ pipeline {
                 script {
                     sh '''
                     # Remove all .war files in the target directory
-                    rm -f /var/lib/jenkins/workspace/adq-java-app/target/*.war
+                    rm -f ${WORKSPACE_DIR}/target/*.war
                     
                     # Get WAR from Artifactory
-                    /google-cloud-sdk/bin/gsutil cp gs://adq-java-app/${BRANCH_NAME}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war /var/lib/jenkins/workspace/adq-java-app/target/
-                    ls -al /var/lib/jenkins/workspace/adq-java-app/target/
+                    /google-cloud-sdk/bin/gsutil cp ${GCS_BUCKET}/${BRANCH_NAME}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war ${WORKSPACE_DIR}/target/
+                    ls -al ${WORKSPACE_DIR}/target/
                     
                     # Shutdown Tomcat
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-10.1.25/bin/shutdown.sh'
@@ -95,7 +98,7 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find /root/apache-tomcat-10.1.25/webapps/ -type f -name 'JAVA_APP-1.2*.war' -exec rm -f {} +"
 
                     # Deploy the new WAR file
-                    scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa /var/lib/jenkins/workspace/adq-java-app/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:/root/apache-tomcat-10.1.25/webapps/
+                    scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:/root/apache-tomcat-10.1.25/webapps/
 
                     # Start Tomcat
                     ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} '/root/apache-tomcat-10.1.25/bin/startup.sh'
