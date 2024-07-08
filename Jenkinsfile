@@ -68,7 +68,7 @@ pipeline {
                     }
 
                     env.PRIVATE_IP = sh(script: '''
-                        gcloud compute instances list --filter="labels.adq-ubuntudesktop=env" --format="value(networkInterfaces[0].networkIP)" --limit=1
+                        gcloud compute instances list --filter="labels.adq_ubuntudesktop=app" --format="value(networkInterfaces[0].networkIP)" --limit=1
                     ''', returnStdout: true).trim()
 
                     echo "Private IP: ${env.PRIVATE_IP}"
