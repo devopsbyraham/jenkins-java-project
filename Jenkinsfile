@@ -31,7 +31,6 @@ pipeline {
         stage('Package') {
             steps {
                 sh '''
-                cd ${WORKSPACE_DIR}
                 mvn compile
                 mvn test
                 mvn package
