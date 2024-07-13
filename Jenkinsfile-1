@@ -7,7 +7,6 @@ pipeline {
     }
     environment {
         WORKSPACE_DIR = '/var/lib/jenkins/workspace/adq-java-app'
-        GCS_BUCKET = 'gs://adq-java-app/'
         PROJECT_ID = 'gcp-adq-pocproject-dev'
         ZONE = 'us-central1-c'
         INSTANCE_NAME = 'get-ubuntudesktop'
