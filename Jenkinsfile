@@ -1,19 +1,25 @@
 pipeline {
     agent {
-        label 'docker'
+        label 'docker' 
     }
     tools {
         maven 'maven'
     }
     environment {
         WORKSPACE_DIR = '/var/lib/jenkins/workspace/adq-java-app'
-        GCS_BUCKET = 'gs://adq-java-app/'
         PROJECT_ID = 'gcp-adq-pocproject-dev'
         ZONE = 'us-central1-c'
         INSTANCE_NAME = 'get-ubuntudesktop'
-        TARGET_HOST_PATH = '/opt/tomcat/apache-tomcat-10.1.25'
+        TARGET_HOST_PATH = '/opt/tomcat/apache-tomcat-10.1.26'
         SONARQUBE_PROJECT_KEY = 'adq-java-app'
         SONARQUBE_HOST_URL = 'http://34.69.178.242:9000'
+        NEXUS_URL = '34.69.178.242:8081'
+        NEXUS_REPOSITORY = 'adq-java-app'
+        NEXUS_GROUP_ID = 'in.RAHAM'
+        NEXUS_ARTIFACT_ID = 'JAVA_APP'
+        NEXUS_VERSION = 'nexus3'
+        NEXUS_PROTOCOL = 'http'
+        SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
     }
     stages {
         stage('Checkout') {
@@ -33,13 +39,14 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonar_token', variable: 'SONAR_TOKEN')]) {
                     sh '''
                     mvn clean verify sonar:sonar \
-                    -Dsonar.projectKey=adq-java-app \
-                    -Dsonar.host.url=http://34.69.178.242:9000 \
+                    -Dsonar.projectKey=${SONARQUBE_PROJECT_KEY} \
+                    -Dsonar.host.url=${SONARQUBE_HOST_URL} \
                     -Dsonar.login=${SONAR_TOKEN}
                     '''
                 }
             }
         }
+        
         stage('Package') {
             steps {
                 sh '''
@@ -49,24 +56,15 @@ pipeline {
                 '''
             }
         }
-        stage('Upload Artifact') {
+        stage('Upload Artifact to Nexus') {
             steps {
                 script {
-                    // Rename the WAR file
                     sh '''
                     cd ${WORKSPACE_DIR}/target/
-                    mv JAVA_APP-1.2.*.war JAVA_APP-1.2.${BUILD_NUMBER}.war
+                    mv JAVA_APP-1.2.*.war JAVA_APP-1.2.${BUILD_NUMBER}
                     '''
-
-                    // Set the path of the artifact and upload path
-                    def artifactPath = "${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war"
-                    def uploadPath = "${BRANCH_NAME}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war"
-
-                    // Upload to Google Cloud Storage using gsutil
-                    sh """
-                    /google-cloud-sdk/bin/gsutil cp ${artifactPath} ${GCS_BUCKET}/${uploadPath}
-                    """
-                }
+                    nexusArtifactUploader artifacts: [[artifactId: "${NEXUS_ARTIFACT_ID}", classifier: '', file: "${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}", type: 'war']], credentialsId: 'nexus_id', groupId: "${NEXUS_GROUP_ID}", nexusUrl: "${NEXUS_URL}", nexusVersion: "${NEXUS_VERSION}", protocol: "${NEXUS_PROTOCOL}", repository: "${NEXUS_REPOSITORY}", version: "1.2.${BUILD_NUMBER}"
+                  }
             }
         }
         stage('Confirmation') {
@@ -87,19 +85,32 @@ pipeline {
         stage('Deployment') {
             steps {
                 script {
-                    sh '''
-                    rm -f ${WORKSPACE_DIR}/target/*.war
-                    /google-cloud-sdk/bin/gsutil cp ${GCS_BUCKET}/${BRANCH_NAME}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war ${WORKSPACE_DIR}/target/
-                    ls -al ${WORKSPACE_DIR}/target/
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "${TARGET_HOST_PATH}/bin/shutdown.sh"
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find ${TARGET_HOST_PATH}/webapps/ -type d -name 'JAVA_APP-1.2.*' -exec rm -rf {} +"
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "find ${TARGET_HOST_PATH}/webapps/ -type f -name 'JAVA_APP-1.2*.war' -exec rm -f {} +"
-                    scp -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:${TARGET_HOST_PATH}/webapps/
-                    ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa root@${PRIVATE_IP} "${TARGET_HOST_PATH}/bin/startup.sh"
-                    '''
+                    // Use Jenkins credentials to authenticate with Nexus
+                    withCredentials([usernamePassword(credentialsId: 'nexus_id', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        sh '''
+                        # Clear the target directory
+                        ls -al ${WORKSPACE_DIR}/target/
+                        rm -r ${WORKSPACE_DIR}/target/*
+                        ls -al ${WORKSPACE_DIR}/target/
+                        
+                        # Download the artifact from Nexus
+                        wget --user=${NEXUS_USER} --password=${NEXUS_PASSWORD} -O ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war ${NEXUS_PROTOCOL}://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/in/RAHAM/JAVA_APP/1.2.${BUILD_NUMBER}/JAVA_APP-1.2.${BUILD_NUMBER}.war
+
+                        # List the target directory to confirm the file is downloaded
+                        ls -al ${WORKSPACE_DIR}/target/
+                        
+                        # Deployment steps
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} root@${PRIVATE_IP} "${TARGET_HOST_PATH}/bin/shutdown.sh"
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} root@${PRIVATE_IP} "find ${TARGET_HOST_PATH}/webapps/ -type d -name 'JAVA_APP-1.2.*' -exec rm -rf {} +"
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} root@${PRIVATE_IP} "find ${TARGET_HOST_PATH}/webapps/ -type f -name 'JAVA_APP-1.2*.war' -exec rm -f {} +"
+                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war root@${PRIVATE_IP}:${TARGET_HOST_PATH}/webapps/
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY_PATH} root@${PRIVATE_IP} "${TARGET_HOST_PATH}/bin/startup.sh"
+                        '''
+                    }
                 }
             }
         }
+ 
         stage('Update pom.xml Version') {
             steps {
                 script {
