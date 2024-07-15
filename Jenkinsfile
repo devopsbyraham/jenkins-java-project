@@ -15,7 +15,7 @@ pipeline {
         SONARQUBE_HOST_URL = 'http://34.69.178.242:9000'
         NEXUS_URL = '34.69.178.242:8081'
         NEXUS_REPOSITORY = 'adq-java-app'
-        NEXUS_GROUP_ID = 'in.RAHAM'
+        NEXUS_GROUP_ID = 'in.ADQ-JAVA-APP'
         NEXUS_ARTIFACT_ID = 'JAVA_APP'
         NEXUS_VERSION = 'nexus3'
         NEXUS_PROTOCOL = 'http'
@@ -94,7 +94,7 @@ pipeline {
                         ls -al ${WORKSPACE_DIR}/target/
                         
                         # Download the artifact from Nexus
-                        wget --user=${NEXUS_USER} --password=${NEXUS_PASSWORD} -O ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war ${NEXUS_PROTOCOL}://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/in/RAHAM/JAVA_APP/1.2.${BUILD_NUMBER}/JAVA_APP-1.2.${BUILD_NUMBER}.war
+                        wget --user=${NEXUS_USER} --password=${NEXUS_PASSWORD} -O ${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}.war ${NEXUS_PROTOCOL}://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/in/ADQ-JAVA-APP/JAVA_APP/1.2.${BUILD_NUMBER}/JAVA_APP-1.2.${BUILD_NUMBER}.war
 
                         # List the target directory to confirm the file is downloaded
                         ls -al ${WORKSPACE_DIR}/target/
