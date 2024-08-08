@@ -10,7 +10,7 @@ pipeline {
         PROJECT_ID = 'gcp-adq-pocproject-dev'
         ZONE = 'us-central1-c'
         INSTANCE_NAME = 'get-ubuntudesktop'
-        TARGET_HOST_PATH = '/opt/tomcat/apache-tomcat-10.1.26'
+        TARGET_HOST_PATH = '/opt/tomcat/apache-tomcat-10.1.28'
         SONARQUBE_PROJECT_KEY = 'adq-java-app'
         SONARQUBE_HOST_URL = 'http://34.69.178.242:9000'
         NEXUS_URL = '34.69.178.242:8081'
