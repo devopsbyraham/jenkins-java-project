@@ -20,6 +20,7 @@ pipeline {
         NEXUS_VERSION = 'nexus3'
         NEXUS_PROTOCOL = 'http'
         SSH_KEY_PATH = '/var/lib/jenkins/.ssh/id_rsa'
+        ADMIN_EMAIL = 'getadqdevops@gmail.com'
     }
     stages {
         stage('Checkout') {
@@ -64,13 +65,12 @@ pipeline {
                     mv JAVA_APP-1.2.*.war JAVA_APP-1.2.${BUILD_NUMBER}
                     '''
                     nexusArtifactUploader artifacts: [[artifactId: "${NEXUS_ARTIFACT_ID}", classifier: '', file: "${WORKSPACE_DIR}/target/JAVA_APP-1.2.${BUILD_NUMBER}", type: 'war']], credentialsId: 'nexus_id', groupId: "${NEXUS_GROUP_ID}", nexusUrl: "${NEXUS_URL}", nexusVersion: "${NEXUS_VERSION}", protocol: "${NEXUS_PROTOCOL}", repository: "${NEXUS_REPOSITORY}", version: "1.2.${BUILD_NUMBER}"
-                  }
+                }
             }
         }
-        stage('Confirmation') {
+        stage('Check Infrastructure and Request Approval') {
             steps {
                 script {
-                    input message: 'Are you sure you want to proceed with the deployment?', ok: 'Yes'
                     def instanceStatus = sh(script: "gcloud compute instances describe ${INSTANCE_NAME} --project=${PROJECT_ID} --zone=${ZONE} --format='get(status)'", returnStdout: true).trim()
                     if (instanceStatus != 'RUNNING') {
                         error "VM instance is not running. Deployment stopped."
@@ -79,13 +79,44 @@ pipeline {
                         gcloud compute instances list --filter="labels.adq_ubuntudesktop=app" --format="value(networkInterfaces[0].networkIP)" --limit=1
                     ''', returnStdout: true).trim()
                     echo "Private IP: ${env.PRIVATE_IP}"
+
+                    emailext (
+                        subject: "Approval Needed: Proceed with Deployment",
+                        body: """
+                            <p>The infrastructure is ready for deployment.</p>
+                            <p>Instance Status: ${instanceStatus}</p>
+                            <p>Private IP: ${env.PRIVATE_IP}</p>
+                            <p>Please approve the execution of the deployment stage.</p>
+                            <p>Click <a href="${env.BUILD_URL}input/">here</a> to provide approval.</p>
+                        """,
+                        mimeType: 'text/html',
+                        to: "${env.ADMIN_EMAIL}"
+                    )
+                    echo 'Approval email sent. Awaiting manual approval...'
+                    
+                    def userInput = input(
+                        id: 'userInput', message: 'Approval needed to proceed with the deployment.', parameters: [
+                            [$class: 'BooleanParameterDefinition', defaultValue: true, description: 'Approve to proceed?', name: 'Proceed']
+                        ]
+                    )
+                    
+                    if (!userInput) {
+                        echo 'Aborted by user.'
+                        currentBuild.result = 'ABORTED'
+                        emailext (
+                            subject: "Approval Denied: Deployment",
+                            body: "The stage to deploy has been denied and will not be executed.",
+                            mimeType: 'text/html',
+                            to: "${env.ADMIN_EMAIL}"
+                        )
+                        error('User aborted the stage.')
+                    }
                 }
             }
         }
         stage('Deployment') {
             steps {
                 script {
-                    // Use Jenkins credentials to authenticate with Nexus
                     withCredentials([usernamePassword(credentialsId: 'nexus_id', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
                         sh '''
                         # Clear the target directory
