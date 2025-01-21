@@ -13,7 +13,7 @@
     </nav>
     <div class="background-image"></div>
     <div class="form-wrapper">
-      <h2>NETFLIX SIGN IN V-7.0</h2>
+      <h2>NETFLIX SIGN IN V-9.0</h2>
       <form action="#">
         <div class="form-control">
           <input type="text" required />
@@ -23,7 +23,7 @@
           <input type="password" required />
           <label>Password</label>
         </div>
-        <button type="submit">WELCOME TO NETFLIX V-6.0</button>
+        <button type="submit">WELCOME TO NETFLIX V-9.0</button>
         <div class="form-help">
           <div class="remember-me">
             <input type="checkbox" id="remember-me" />
