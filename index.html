@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prime Series — Spotlight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark light" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0b0e12; --bg-soft:#10141b; --panel:#121821; --text:#e9f0f5; --muted:#a7b2bd;
+      --brand:#00a8e1; --brand-700:#008fbe; --accent:#ffd166; --card:#0f1319; --ring:0 0 0 2px #00a8e120;
+      --ok:#3ddc97; --warn:#ff9f1c; --danger:#ef476f;
+      --shadow: 0 10px 30px #00000055, inset 0 1px 0 #ffffff10;
+      --radius:14px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height:100%; }
+    body {
+      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 90% -10%, #0c3b4f33, transparent 60%),
+        radial-gradient(900px 500px at 10% -10%, #1f284733, transparent 60%),
+        linear-gradient(180deg, #0b0e12, #0b0e12);
+      overflow-x:hidden;
+    }
+    .container { width:min(1200px, 92%); margin-inline:auto; }
+
+    /* Nav */
+    .nav {
+      position:sticky; top:0; z-index:20;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px min(4vw,28px);
+      background: linear-gradient(180deg, #0b0e12e6, #0b0e1200);
+      backdrop-filter: blur(8px) saturate(1.2);
+      border-bottom:1px solid #ffffff12;
+    }
+    .brand {
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+    }
+    .logo {
+      display:inline-grid; place-items:center; width:30px; height:30px; border-radius:8px;
+      background:linear-gradient(135deg, var(--brand), #39c8ff); color:#00121a; font-weight:900;
+      box-shadow:0 4px 16px #00a8e144;
+    }
+    .brand__name { font-weight:800; }
+    .nav__links a {
+      color:var(--muted); margin:0 10px; text-decoration:none; font-weight:600; padding:6px 8px; border-radius:8px;
+    }
+    .nav__links a:hover, .nav__links a.active { color:var(--text); background:#ffffff0a; }
+    .nav__actions { display:flex; align-items:center; gap:12px; }
+    .search {
+      width:clamp(160px, 24vw, 260px);
+      padding:10px 12px; border-radius:10px; border:1px solid #ffffff22; background:#0d1218; color:var(--text);
+      outline:none; transition:.2s; box-shadow:var(--ring);
+    }
+    .search:focus { border-color:#39c8ff88; box-shadow:0 0 0 3px #39c8ff22; }
+    .avatar { width:34px; height:34px; border-radius:50%; border:1px solid #ffffff22; }
+
+    /* Hero */
+    .hero {
+      position:relative; min-height:62vh; display:grid; align-items:end; overflow:hidden;
+      border-bottom:1px solid #ffffff12;
+      background: radial-gradient(1200px 600px at 70% -10%, #005a7a3c, transparent 60%);
+    }
+    .hero__bg {
+      position:absolute; inset:0; background:
+        linear-gradient(90deg, #0b0e12 0%, #0b0e12cc 38%, #0b0e1200 70%),
+        url('https://images.unsplash.com/photo-1542206395-9feb3edaa68e?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .hero__content { position:relative; padding:60px 0 48px; }
+    .tags { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+    .tag {
+      background:#ffffff12; color:#cfe8f3; border:1px solid #ffffff24; border-radius:999px; padding:6px 10px; font-size:12px;
+    }
+    .hero__title { font-size: clamp(30px, 6.2vw, 56px); margin:6px 0 10px; line-height:1.05; }
+    .hero__meta { color:var(--muted); margin:0 0 14px; font-weight:600; }
+    .rating { color:var(--accent); font-weight:800; }
+    .hero__desc { color:#d6dde3; max-width:62ch; margin:0 0 20px; }
+    .cta { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex; align-items:center; gap:9px; padding:12px 16px; border-radius:12px;
+      border:1px solid #ffffff22; background:#0f141b; color:var(--text); cursor:pointer; transition:.2s; box-shadow:var(--ring);
+      font-weight:700;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn--primary { background:var(--brand); border-color:var(--brand); color:#031018; box-shadow:0 10px 24px #00a8e155; }
+    .btn--primary:hover { background:var(--brand-700); }
+    .btn--ghost { background:#ffffff0f; }
+
+    /* Rows and cards */
+    .section { padding:28px 0 18px; }
+    .section__title { font-size:20px; font-weight:800; margin:0 0 12px; letter-spacing:.2px; }
+    .grid {
+      display:grid; gap:14px; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
+    .card {
+      position:relative; overflow:hidden; border-radius:var(--radius); background:var(--card); box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease; isolation:isolate;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px #00000066, inset 0 1px 0 #ffffff10; }
+    .poster {
+      width:100%; height:250px; object-fit:cover; display:block; filter:saturate(1.06) contrast(1.03);
+    }
+    .card__overlay {
+      position:absolute; inset:auto 0 0 0; padding:10px; background:linear-gradient(180deg, #0000, #000a, #000e);
+      color:#dfe7ee; transform: translateY(44%); transition:.22s ease;
+      display:grid; gap:6px;
+    }
+    .card:hover .card__overlay { transform: translateY(0); }
+    .badge {
+      position:absolute; top:10px; left:10px; background:#000000a8; border:1px solid #ffffff28; color:#fff;
+      padding:4px 8px; border-radius:999px; font-size:12px; backdrop-filter: blur(2px);
+    }
+    .title { font-weight:800; font-size:14px; }
+    .meta { font-size:12px; color:#b1c0cd; }
+    .controls { display:flex; align-items:center; gap:10px; }
+    .icon {
+      width:36px; height:36px; border-radius:999px; border:1px solid #ffffff2c; background:#ffffff10;
+      display:inline-grid; place-items:center; cursor:pointer;
+    }
+    .icon.play::before{ content:"▶"; margin-left:2px; font-size:13px; }
+    .icon.add::before{ content:"＋"; font-size:14px; }
+    .pill {
+      margin-left:auto; font-size:12px; color:#cfe1ee; background:#ffffff12; border:1px solid #ffffff22; padding:3px 8px; border-radius:999px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top:1px solid #ffffff12; padding:24px 0 60px; color:var(--muted); margin-top:24px;
+      background: linear-gradient(180deg, #0b0e1200, #0b0e121a);
+    }
+    .links { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:8px; }
+    .links a { color:#c5d2dd; text-decoration:none; }
+    .links a:hover { color:#fff; }
+
+    /* Responsive tweaks */
+    @media (max-width:720px){
+      .nav__links { display:none; }
+      .poster { height:220px; }
+      .hero__content { padding:36px 0 30px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <header class="nav">
+    <div class="brand">
+      <span class="logo">P</span>
+      <span class="brand__name">Prime Series</span>
+    </div>
+    <nav class="nav__links">
+      <a href="#" class="active">Home</a>
+      <a href="#originals">Originals</a>
+      <a href="#top10">Top 10</a>
+      <a href="#scifi">Sci‑Fi</a>
+      <a href="#drama">Drama</a>
+    </nav>
+    <div class="nav__actions">
+      <input class="search" id="q" type="search" placeholder="Search series..." />
+      <img class="avatar" src="https://i.pravatar.cc/60?img=15" alt="Profile" />
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__bg" role="img" aria-label="Featured series background"></div>
+    <div class="hero__content container">
+      <div class="tags">
+        <span class="tag">Prime Original</span>
+        <span class="tag">4K</span>
+        <span class="tag">Dolby Atmos</span>
+      </div>
+      <h1 class="hero__title" id="heroTitle">The Meridian Protocol</h1>
+      <p class="hero__meta">
+        Season 1 • Thriller • 8 Episodes • <span class="rating">IMDb 8.6</span>
+      </p>
+      <p class="hero__desc" id="heroDesc">
+        A gifted cryptanalyst uncovers a pattern in global outages that points to a shadow network controlling the world’s data.
+      </p>
+      <div class="cta">
+        <button class="btn btn--primary" id="playHero">▶ Watch S1 E1</button>
+        <button class="btn btn--ghost" id="addHero">＋ Add to Watchlist</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW: ORIGINALS -->
+  <section class="section container" id="originals">
+    <h2 class="section__title">Amazon Originals</h2>
+    <div class="grid" id="grid-originals">
+      <!-- Cards rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ROW: TOP 10 -->
+  <section class="section container" id="top10">
+    <h2 class="section__title">Top 10 in India Today</h2>
+    <div class="grid" id="grid-top"></div>
+  </section>
+
+  <!-- ROW: SCI-FI -->
+  <section class="section container" id="scifi">
+    <h2 class="section__title">Because you like Sci‑Fi</h2>
+    <div class="grid" id="grid-scifi"></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="links">
+        <a href="#">Help</a>
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">About</a>
+      </div>
+      <p class="muted">© 2025 Prime Series — Demo UI. Not affiliated.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Demo data (replace with API/backend later)
+    const posters = [
+      "https://images.unsplash.com/photo-1542206395-9feb3edaa68e?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517602302552-471fe67acf66?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1495562569060-2eec283d3391?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1487180144351-b8472da7d491?q=80&w=800&auto=format&fit=crop"
+    ];
+
+    const originals = [
+      { title:"The Meridian Protocol", meta:"S1 • Thriller", time:"45m", badge:"NEW", rating:8.6 },
+      { title:"Neon Bazaar", meta:"S2 • Drama", time:"48m", badge:"4K", rating:8.1 },
+      { title:"Quantum Alley", meta:"S1 • Sci‑Fi", time:"50m", badge:"HDR", rating:8.3 },
+      { title:"Galli No. 7", meta:"S3 • Crime", time:"47m", badge:"HD", rating:7.9 },
+      { title:"Skyline Run", meta:"S1 • Action", time:"42m", badge:"HDR", rating:7.8 },
+      { title:"Monsoon Letters", meta:"Mini • Romance", time:"38m", badge:"HD", rating:7.5 },
+      { title:"Carbon Night", meta:"S2 • Sci‑Fi", time:"52m", badge:"4K", rating:8.2 },
+      { title:"Paper Tigers", meta:"S1 • Comedy", time:"28m", badge:"HD", rating:7.4 },
+    ].map((s, i) => ({...s, img: posters[i % posters.length]}));
+
+    const top10 = [...originals]
+      .sort((a,b)=>b.rating-a.rating)
+      .slice(0,6)
+      .map((s,i)=> ({...s, badge:`#${i+1}`}));
+
+    const scifi = originals.filter(s=>/sci\-?fi/i.test(s.meta)).map(s=>({...s, badge:"Sci‑Fi"}));
+
+    function cardHTML(item){
+      return `
+        <article class="card">
+          <span class="badge">${item.badge}</span>
+          <img class="poster" src="${item.img}" alt="${item.title}" loading="lazy" />
+          <div class="card__overlay">
+            <div class="title">${item.title}</div>
+            <div class="meta">${item.meta}</div>
+            <div class="controls">
+              <button class="icon play" title="Play" data-title="${item.title}"></button>
+              <button class="icon add" title="Add to Watchlist" data-title="${item.title}"></button>
+              <span class="pill">IMDb ${item.rating}</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderRow(id, items){
+      const el = document.getElementById(id);
+      el.innerHTML = items.map(cardHTML).join("");
+    }
+
+    renderRow("grid-originals", originals);
+    renderRow("grid-top", top10);
+    renderRow("grid-scifi", scifi);
+
+    // Search filter (client-side demo)
+    const q = document.getElementById('q');
+    q.addEventListener('input', (e)=>{
+      const term = e.target.value.trim().toLowerCase();
+      const filtered = originals.filter(s => s.title.toLowerCase().includes(term) || s.meta.toLowerCase().includes(term));
+      renderRow("grid-originals", term ? filtered : originals);
+    });
+
+    // Simple interactions
+    document.body.addEventListener('click', (e)=>{
+      const play = e.target.closest('.icon.play');
+      const add = e.target.closest('.icon.add');
+      if (play) alert(`Playing: ${play.dataset.title}`);
+      if (add) alert(`Added to Watchlist: ${add.dataset.title}`);
+    });
+
+    // Hero CTA demos
+    document.getElementById('playHero').addEventListener('click', ()=> alert('Playing: The Meridian Protocol • S1E1'));
+    document.getElementById('addHero').addEventListener('click', ()=> alert('Added: The Meridian Protocol'));
+  </script>
+</body>
+</html>
