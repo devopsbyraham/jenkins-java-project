@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Netflix Clone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Minimal reset and app styles -->
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body class="theme-dark">
+  <header class="nav">
+    <div class="nav__brand">
+      <span class="logo">N</span>
+      <span class="brand">Netflix Clone</span>
+    </div>
+    <nav class="nav__links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Series</a>
+      <a href="#">Movies</a>
+      <a href="#">My List</a>
+    </nav>
+    <div class="nav__actions">
+      <input class="search" type="search" placeholder="Search" />
+      <img class="avatar" src="https://i.pravatar.cc/40?img=3" alt="Profile" />
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" style="--bg:url('assets/img/hero.jpg')">
+      <div class="hero__overlay"></div>
+      <div class="hero__content container">
+        <h1 class="hero__title">Edge of Tomorrow</h1>
+        <p class="hero__meta">Sci‑Fi • 2h • 4K • IMDB 8.0</p>
+        <p class="hero__desc">A soldier relives a fatal day in a war against aliens, learning with each cycle.</p>
+        <div class="hero__actions">
+          <button class="btn btn--primary">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+            Play
+          </button>
+          <button class="btn btn--ghost">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7v10m5-5H7"/></svg>
+            My List
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROWS -->
+    <section class="row container">
+      <h2 class="row__title">Trending Now</h2>
+      <div class="cards">
+        <!-- Repeat .card for items -->
+        <a class="card" href="#">
+          <img src="assets/img/posters/1.jpg" alt="Poster 1" />
+          <div class="card__overlay">
+            <span class="badge">HD</span>
+            <div class="controls">
+              <button class="icon play" title="Play"></button>
+              <button class="icon add" title="Add to List"></button>
+              <span class="meta">2h 5m • Sci‑Fi</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="card" href="#">
+          <img src="assets/img/posters/2.jpg" alt="Poster 2" />
+          <div class="card__overlay">
+            <span class="badge">4K</span>
+            <div class="controls">
+              <button class="icon play"></button>
+              <button class="icon add"></button>
+              <span class="meta">1h 52m • Action</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="card" href="#">
+          <img src="assets/img/posters/3.jpg" alt="Poster 3" />
+          <div class="card__overlay">
+            <span class="badge">HD</span>
+            <div class="controls">
+              <button class="icon play"></button>
+              <button class="icon add"></button>
+              <span class="meta">45m • Drama</span>
+            </div>
+          </div>
+        </a>
+        <!-- Add more cards as needed -->
+      </div>
+    </section>
+
+    <section class="row container">
+      <h2 class="row__title">Because you watched Sci‑Fi</h2>
+      <div class="cards cards--scroll">
+        <!-- More cards... -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer container">
+    <div class="links">
+      <a href="#">FAQ</a>
+      <a href="#">Help Center</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Privacy</a>
+    </div>
+    <p class="muted">© 2025 Netflix Clone. For demo purposes.</p>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
