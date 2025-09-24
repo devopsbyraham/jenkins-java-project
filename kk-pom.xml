@@ -23,9 +23,9 @@
         <!-- SonarQube properties -->
         <sonar.projectKey>NETFLIX</sonar.projectKey>
         <sonar.projectName>Netflix Clone</sonar.projectName>
-        <sonar.host.url>http://15.207.54.73:8899</sonar.host.url>
+        <sonar.host.url>http://98.84.151.54:8899/</sonar.host.url>
         <sonar.login>admin</sonar.login>
-        <sonar.password>password</sonar.password>
+        <sonar.password>90199652</sonar.password>
         <sonar.login>your-generated-sonarqube-token</sonar.login>
     </properties>
 
