@@ -24,9 +24,9 @@
         <sonar.projectKey>NETFLIX-123</sonar.projectKey>
         <sonar.projectName>Netflix Clone</sonar.projectName>
         <sonar.host.url>http://54.163.216.87:8899</sonar.host.url>
-        <!-- <sonar.login>admin</sonar.login>
-        <sonar.password>90199652</sonar.password> --> 
-        <sonar.login>sqp_c39d7085839aceeac0410c30d06201fa5e24ce22</sonar.login>
+        <sonar.login>admin</sonar.login>
+        <sonar.password>90199652</sonar.password> 
+        <!-- <sonar.login>sqp_c39d7085839aceeac0410c30d06201fa5e24ce22</sonar.login> --> 
     </properties>
 
     <dependencies>
