@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- SonarQube properties -->
-        <sonar.projectKey>NETFLIX-123</sonar.projectKey>
+        <sonar.projectKey>NETFLIX-456</sonar.projectKey>
         <sonar.projectName>Netflix Clone</sonar.projectName>
         <sonar.host.url>http://54.163.216.87:8899</sonar.host.url>
         <sonar.login>admin</sonar.login>
