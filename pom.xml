@@ -26,7 +26,7 @@
         <sonar.host.url>http://54.163.216.87:8899</sonar.host.url>
         <!-- <sonar.login>admin</sonar.login>
         <sonar.password>90199652</sonar.password> --> 
-        <sonar.login>sqp_1282d5fc2c803f6139cf0a530bd8ef8576f4f557</sonar.login>
+        <sonar.login>sqp_c39d7085839aceeac0410c30d06201fa5e24ce22</sonar.login>
     </properties>
 
     <dependencies>
