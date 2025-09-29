@@ -29,11 +29,11 @@
   <distributionManagement>
     <repository>
       <id>nexus-releases</id>
-      <url>http://18.234.131.134:8081//repository/airtel-releases/</url>
+      <url>http://18.234.131.134:8081//repository/releases/</url>
     </repository>
     <snapshotRepository>
       <id>nexus-snapshots</id>
-      <url>http://18.234.131.134:8081//repository/airtel-snapshots/</url>
+      <url>http://18.234.131.134:8081//repository/snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
