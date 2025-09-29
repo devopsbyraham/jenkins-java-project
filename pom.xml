@@ -22,18 +22,18 @@
     <!-- SonarQube -->
     <sonar.projectKey>in.nandeesh.netflix.clone</sonar.projectKey>
     <sonar.projectName>Netflix Clone</sonar.projectName>
-    <sonar.host.url>http://54.163.216.87:8899</sonar.host.url>
+    <!--<sonar.host.url>http://54.163.216.87:8899</sonar.host.url>  -->
     <!-- ⚠️ Do not hardcode tokens here. Pass via -Dsonar.login or settings.xml -->
   </properties>
 
   <distributionManagement>
     <repository>
       <id>nexus-releases</id>
-      <url>http://<nexus-server>:8081/repository/maven-releases/</url>
+      <url>http://18.234.131.134:8081//repository/maven-releases/</url>
     </repository>
     <snapshotRepository>
       <id>nexus-snapshots</id>
-      <url>http://<nexus-server>:8081/repository/maven-snapshots/</url>
+      <url>http://18.234.131.134:8081//repository/maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
