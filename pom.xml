@@ -7,7 +7,7 @@
 
   <groupId>in.nandeesh</groupId>
   <artifactId>netflix-clone</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2</version>
   <packaging>war</packaging>
 
   <name>Netflix Clone WebApp</name>
