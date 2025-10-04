@@ -31,11 +31,11 @@
   <distributionManagement>
     <repository>
       <id>airtel-release</id>
-      <url>http://54.145.59.145:8081//repository/airtel-releases/</url>
+      <url>http://54.145.59.145:8081/repository/airtel-releases/</url>
     </repository>
     <snapshotRepository>
       <id>airtel-snapshots</id>
-      <url>http://54.145.59.145:8081//repository/airtel-snapshots/</url>
+      <url>http://54.145.59.145:8081/repository/airtel-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
