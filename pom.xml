@@ -7,7 +7,7 @@
 
   <groupId>in.nandeesh</groupId>
   <artifactId>netflix-clone</artifactId>
-  <version>1.2.2-SNAPSHOT</version>
+  <version>1.2.2</version>
   <packaging>war</packaging>
 
   <name>Netflix Clone WebApp</name>
@@ -22,7 +22,7 @@
     <!-- SonarQube -->
     <sonar.projectKey>in.nandeesh.netflix.clone</sonar.projectKey>
     <sonar.projectName>Netflix Clone</sonar.projectName>
-    <sonar.host.url>http://52.23.224.56:9000</sonar.host.url>  
+    <sonar.host.url>http://54.234.248.106:9000</sonar.host.url>  
     <sonar.login>admin</sonar.login>
     <sonar.password>90199652</sonar.password> 
     <!-- ⚠️ Do not hardcode tokens here. Pass via -Dsonar.login or settings.xml -->
@@ -31,11 +31,11 @@
   <distributionManagement>
     <repository>
       <id>nexus</id>
-      <url>http://54.145.59.145:8081/repository/airtel-release/</url>
+      <url>http://54.91.161.37:8081/repository/airtel-release/</url>
     </repository>
     <snapshotRepository>
       <id>nexus</id>
-      <url>http://54.145.59.145:8081/repository/airtel-snapshot/</url>
+      <url>http://54.91.161.37:8081/repository/airtel-snapshot/</url>
     </snapshotRepository>
   </distributionManagement>
 
