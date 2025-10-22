@@ -22,7 +22,7 @@
     <!-- SonarQube -->
     <sonar.projectKey>in.nandeesh.netflix.clone</sonar.projectKey>
     <sonar.projectName>Netflix Clone</sonar.projectName>
-    <sonar.host.url>http://52.90.170.238:9000</sonar.host.url>  
+    <sonar.host.url>http://18.221.168.239:9000</sonar.host.url>  
     <sonar.login>admin</sonar.login>
     <sonar.password>90199652</sonar.password> 
     <!-- ⚠️ Do not hardcode tokens here. Pass via -Dsonar.login or settings.xml -->
@@ -31,11 +31,11 @@
   <distributionManagement>
     <repository>
       <id>nexus</id>
-      <url>http://34.235.166.123:8081/repository/airtel-release/</url>
+      <url>http://3.144.160.217:8081/repository/jio-release/</url>
     </repository>
     <snapshotRepository>
       <id>nexus</id>
-      <url>http://34.235.166.123:8081/repository/airtel-snapshot/</url>
+      <url>http://3.144.160.217:8081/repository/jio-snapshot/</url>
     </snapshotRepository>
   </distributionManagement>
 
