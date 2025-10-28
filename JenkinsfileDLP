@@ -35,7 +35,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId:'tomcat-deployer',usernameVariable:'DEPLOY_USER',passwordVariable:'DEPLOY_PASS')]) {
                     sh """
                     curl -u $DEPLOY_USER:$DEPLOY_PASS \
-                    --upload-file /var/lib/jenkins/workspace/jio-declarative-pipeline/target/netflix-clone.war \
+                    --upload-file target/netflix-clone.war \
                     "http://18.218.177.248:8080/manager/text/deploy?path=/netflix-clone&update=true"
                     """
                 }
