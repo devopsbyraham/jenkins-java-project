@@ -1,0 +1,92 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven 'maven_3.9.11'
+    }
+    
+    environment {
+        BUILD_STATUS = 'SUCCESS'
+    }
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git branch: 'developement', url: 'https://github.com/Nandeesh94/jenkins-java-project.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh "mvn clean package"
+            }
+        }
+        stage('sonarqube report') {
+            steps {
+                sh "mvn clean sonar:sonar"
+            }
+        }
+        stage('upload nexus') {
+            steps {
+                sh "mvn clean deploy"
+            }
+        }
+        stage('deploy tomcat') {
+            steps {
+                withCredentials([usernamePassword(credentialsId:'tomcat-deployer',usernameVariable:'DEPLOY_USER',passwordVariable:'DEPLOY_PASS')]) {
+                    sh """
+                    curl -u $DEPLOY_USER:$DEPLOY_PASS \
+                    --upload-file /var/lib/jenkins/workspace/jio-declarative-pipeline/target/netflix-clone.war \
+                    "http://18.218.177.248:8080/manager/text/deploy?path=/netflix-clone&update=true"
+                    """
+                }
+            }
+        }
+        stage('verify deployment') {
+            steps {
+                catchError(buildResult:'FAILURE',stageResult:'FAILURE') {
+                    sh "curl -I http://18.218.177.248:8080/netflix-clone/"
+                }    
+            }
+        }
+    }
+    post {
+            always {
+                echo "cleaning up workspace.."
+                deleteDir()
+            }
+            success {
+            slackSend(
+                color: '#00FF00',
+                message: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                channel: '#jio-devteam'
+            )
+            slackSend(
+                color: '#00FF00',
+                message: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                channel: '#jio-devops'
+            )
+        }
+
+        failure {
+            slackSend(
+                color: '#FF0000',
+                message: "❌ FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                channel: '#jio-devteam'
+            )
+            slackSend(
+                color: '#FF0000',
+                message: "❌ FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                channel: '#jio-devops'
+            )
+        }
+
+        aborted {
+            slackSend(
+                color: '#FFFF00',
+                message: "🛑 ABORTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                channel: '#jio-devteam'
+            )
+        }
+    }
+}
+        
