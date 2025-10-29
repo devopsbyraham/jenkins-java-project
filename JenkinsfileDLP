@@ -48,6 +48,13 @@ pipeline {
                 }    
             }
         }
+        stage('jenkins backup') {
+            steps {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    sh 'sudo /opt/scripts/jenkins_backup.sh'
+                }
+            }
+        }
     }
     post {
             always {
@@ -60,19 +67,9 @@ pipeline {
                 message: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
                 channel: '#bsnl-test'
             )
-            slackSend(
-                color: '#00FF00',
-                message: "✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
-                channel: '#bsnl-test'
-            )
         }
 
         failure {
-            slackSend(
-                color: '#FF0000',
-                message: "❌ FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
-                channel: '#bsnl-test'
-            )
             slackSend(
                 color: '#FF0000',
                 message: "❌ FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
