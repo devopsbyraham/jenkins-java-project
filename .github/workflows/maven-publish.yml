@@ -22,7 +22,7 @@ jobs:
             maven_version: '3.9.11'
 
         - name: checkout
-          uses: actions/version@v6
+          uses: actions/checkout@v6
 
         - name: Build
           run: mvn compile
