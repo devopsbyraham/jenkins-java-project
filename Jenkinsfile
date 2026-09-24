@@ -31,10 +31,15 @@ pipeline {
                 s3Upload consoleLogLevel: 'INFO', dontSetBuildResultOnFailure: false, dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'artifactbucketfornetflixapp', excludedFile: '', flatten: false, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'ap-south-1', showDirectlyInBrowser: false, sourceFile: 'target/NETFLIX-1.2.2.war', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'raham', userMetadata: []
             }
         }
-        stage('deploy') {
-            steps {
-                echo "my code is deployed"
-            }
-        }
+        stage('Deploy') {
+    when {
+        // Runs always, regardless of previous failures
+        beforeAgent true
+        expression { return true } 
+    }
+    steps {
+        echo 'Deploying anyway...'
+    }
+}
     }
 }
